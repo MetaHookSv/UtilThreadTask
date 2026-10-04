@@ -63,8 +63,9 @@ scripts\build-UtilThreadTask-x86-Release.bat -DMETAHOOK_SOURCE_PATH=D:\MetaHook 
 
 加载 DLL，将 `CreateInterface` 导出转换为 `CreateInterfaceFn`，
 使用 `UTIL_THREAD_TASK_FACTORY_INTERFACE_VERSION` 获取 `IUtilThreadTaskFactory`，
-再调用 `CreateThreadedTaskScheduler()`。安装的头文件分别位于
-`include/Interface` 和 `include/HLSDK/common`；使用方需要添加这两个 include 路径。
+再调用 `CreateThreadedTaskScheduler()`。公共头文件分别位于仓库的 `include/Interface`
+和 MetaHook SDK 的 `include/HLSDK/common`（不复制到安装目录或发布压缩包）；
+使用方需要添加这两个 include 路径。
 
 - `QueueTask(task)` 在队尾入队，`QueueTask(task, true)` 在队首入队。
   入队后任务由调度器管理；指针必须有效，`Destroy()` 应在分配对象的模块中释放它。

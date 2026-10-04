@@ -64,8 +64,9 @@ package. `UTILTHREADTASK_DEPENDENCY_CACHE_DIR` can override the download cache.
 Load the DLL and resolve its `CreateInterface` export as `CreateInterfaceFn`.
 Request `UTIL_THREAD_TASK_FACTORY_INTERFACE_VERSION` to obtain
 `IUtilThreadTaskFactory`, then call `CreateThreadedTaskScheduler()`.
-The installed headers are in `include/Interface` and `include/HLSDK/common`;
-add both directories to your include paths.
+The public headers are in the repository's `include/Interface` and the MetaHook SDK's
+`include/HLSDK/common` (headers are not copied into the install tree or the release
+archive); add both directories to your include paths.
 
 - `QueueTask(task)` appends a task; `QueueTask(task, true)` inserts at the front.
   Ownership transfers to the scheduler. Submit valid tasks whose `Destroy()`

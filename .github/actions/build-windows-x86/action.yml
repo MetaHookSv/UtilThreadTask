@@ -13,7 +13,7 @@ runs:
       shell: cmd
       run: call scripts\build-UtilThreadTask-x86-Release.bat
 
-    - name: Package runtime and public headers
+    - name: Package runtime
       id: package
       shell: pwsh
       working-directory: install/x86/Release
@@ -24,7 +24,7 @@ runs:
         if (Test-Path -LiteralPath $archivePath -PathType Leaf) {
           Remove-Item -LiteralPath $archivePath
         }
-        & 7z a -t7z $archivePath 'svencoop' 'include'
+        & 7z a -t7z $archivePath 'svencoop'
         if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
         & 7z t $archivePath
         if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
