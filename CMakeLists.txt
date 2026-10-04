@@ -55,8 +55,3 @@ endif()
 
 install(TARGETS UtilThreadTask RUNTIME DESTINATION svencoop/metahook/dlls)
 install(FILES "$<TARGET_PDB_FILE:UtilThreadTask>" DESTINATION svencoop/metahook/dlls)
-install(FILES include/Interface/IUtilThreadTask.h DESTINATION include/Interface)
-install(FILES "${METAHOOK_SOURCE_PATH}/include/HLSDK/common/interface.h" DESTINATION include/HLSDK/common)
-install(FILES README.md README.zh-CN.md LICENSE THIRD-PARTY-NOTICES.md DESTINATION .)
-install(FILES "${METAHOOK_SOURCE_PATH}/LICENSE" DESTINATION licenses/MetaHook)
-install(FILES "${VC_LTL_Root}/Readme.md" DESTINATION licenses/VC-LTL)
