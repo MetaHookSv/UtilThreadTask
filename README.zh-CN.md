@@ -1,12 +1,12 @@
 # UtilThreadTask
 
-从 [MetaHookSv](https://github.com/hzqst/MetaHookSv) 拆分的独立任务队列。
+从 [MetaHookSv](https://github.com/MetaHookSv/MetaHookSv) 拆分的独立任务队列。
 多个线程可以提交任务；任务在调用 `RunTask` / `RunTasks` 的线程执行。
 调度器自身不创建工作线程。
 
 保留原来的 `UtilThreadTask.dll`、`CreateInterface` 导出和
 `UtilThreadTaskFactory_001` ABI。源码基线为
-`hzqst/MetaHookSv@fe80b6d60bfb487b52aed7ea7ec0492e7b27a5d2` 中的
+`MetaHookSv/MetaHookSv@fe80b6d60bfb487b52aed7ea7ec0492e7b27a5d2` 中的
 `PluginLibs/UtilThreadTask` 和 `include/Interface/IUtilThreadTask.h`。
 
 ## 构建与测试

@@ -2,7 +2,7 @@
 
 ## MetaHookSv / MetaHook SDK
 
-- Original library: https://github.com/hzqst/MetaHookSv
+- Original library: https://github.com/MetaHookSv/MetaHookSv
 - SDK: https://github.com/MetaHookSv/MetaHook
 - SDK commit: `4d23b6fecd79dc949aabc2e145480cd1328d4a35`
 - MetaHookSv is distributed under the MIT license, copyright (c) 2021 hzqst.

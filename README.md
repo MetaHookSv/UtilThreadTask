@@ -1,12 +1,12 @@
 # UtilThreadTask
 
-A standalone task queue extracted from [MetaHookSv](https://github.com/hzqst/MetaHookSv).
+A standalone task queue extracted from [MetaHookSv](https://github.com/MetaHookSv/MetaHookSv).
 Multiple threads can submit tasks; tasks execute on the thread calling `RunTask`
 or `RunTasks`. The scheduler creates no worker threads.
 
 The port preserves `UtilThreadTask.dll`, the `CreateInterface` export, and the
 `UtilThreadTaskFactory_001` ABI. Source baseline:
-`hzqst/MetaHookSv@fe80b6d60bfb487b52aed7ea7ec0492e7b27a5d2`,
+`MetaHookSv/MetaHookSv@fe80b6d60bfb487b52aed7ea7ec0492e7b27a5d2`,
 `PluginLibs/UtilThreadTask` and `include/Interface/IUtilThreadTask.h`.
 
 ## Build and test
