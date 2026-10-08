@@ -19,7 +19,7 @@ void Check(bool condition, const char* message)
         throw std::runtime_error(message);
 }
 
-template<class T>
+template <class T>
 void Expect(const T& expected, const T& actual, const char* message)
 {
     Check(expected == actual, message);
@@ -34,7 +34,7 @@ public:
     }
 
     ~LoadedModule() { Sys_FreeModule(m_module); }
-    LoadedModule(const LoadedModule&) = delete;
+    LoadedModule(const LoadedModule&)            = delete;
     LoadedModule& operator=(const LoadedModule&) = delete;
 
     CreateInterfaceFn Factory() const
@@ -50,7 +50,7 @@ private:
 
 IUtilThreadTaskFactory* GetTaskFactory(CreateInterfaceFn factory)
 {
-    int result = IFACE_FAILED;
+    int  result      = IFACE_FAILED;
     auto taskFactory = static_cast<IUtilThreadTaskFactory*>(
         factory(UTIL_THREAD_TASK_FACTORY_INTERFACE_VERSION, &result));
     Expect(int(IFACE_OK), result, "Factory lookup status");
@@ -73,18 +73,17 @@ Scheduler CreateScheduler(CreateInterfaceFn factory)
 
 struct TaskRecord
 {
-    int runs = 0;
-    int destroys = 0;
-    std::vector<float> shouldRunTimes;
-    std::vector<float> runTimes;
+    int                          runs     = 0;
+    int                          destroys = 0;
+    std::vector<float>           shouldRunTimes;
+    std::vector<float>           runTimes;
     std::vector<std::thread::id> runThreads;
 };
 
 class RecordingTask : public IThreadedTask
 {
 public:
-    RecordingTask(TaskRecord& record, int id = 0, std::vector<int>* order = nullptr)
-        : m_record(record), m_id(id), m_order(order) {}
+    RecordingTask(TaskRecord& record, int id = 0, std::vector<int>* order = nullptr) : m_record(record), m_id(id), m_order(order) {}
 
     void Destroy() override
     {
@@ -109,13 +108,13 @@ public:
             onRun();
     }
 
-    bool ready = true;
-    float readyAt = -FLT_MAX;
+    bool                  ready   = true;
+    float                 readyAt = -FLT_MAX;
     std::function<void()> onRun;
 
 private:
-    TaskRecord& m_record;
-    int m_id;
+    TaskRecord&       m_record;
+    int               m_id;
     std::vector<int>* m_order;
 };
 
@@ -130,15 +129,15 @@ void TestFactory(CreateInterfaceFn factory)
     auto first = GetTaskFactory(factory);
     Expect(first, GetTaskFactory(factory), "Factory must be a singleton");
     Expect(static_cast<IBaseInterface*>(first),
-        factory(UTIL_THREAD_TASK_FACTORY_INTERFACE_VERSION, nullptr), "Null status pointer lookup");
+           factory(UTIL_THREAD_TASK_FACTORY_INTERFACE_VERSION, nullptr), "Null status pointer lookup");
     int result = IFACE_OK;
     Check(factory("UtilThreadTaskFactory_unknown", &result) == nullptr, "Unknown version must fail");
     Expect(int(IFACE_FAILED), result, "Unknown version lookup status");
     Check(factory("UtilThreadTaskFactory_unknown", nullptr) == nullptr, "Unknown version without status");
 
     TaskRecord record;
-    Scheduler a(first->CreateThreadedTaskScheduler());
-    Scheduler b(first->CreateThreadedTaskScheduler());
+    Scheduler  a(first->CreateThreadedTaskScheduler());
+    Scheduler  b(first->CreateThreadedTaskScheduler());
     Check(a && b && a.get() != b.get(), "Schedulers must be independent instances");
     a->QueueTask(new RecordingTask(record));
     Check(!b->RunTask(0.0f), "Second scheduler must have its own queue");
@@ -161,8 +160,8 @@ void TestEmpty(CreateInterfaceFn factory)
 void TestOrdering(CreateInterfaceFn factory)
 {
     std::vector<TaskRecord> records(4);
-    std::vector<int> order;
-    auto scheduler = CreateScheduler(factory);
+    std::vector<int>        order;
+    auto                    scheduler = CreateScheduler(factory);
     scheduler->QueueTask(new RecordingTask(records[0], 0, &order));
     scheduler->QueueTask(new RecordingTask(records[1], 1, &order));
     scheduler->QueueTask(new RecordingTask(records[2], 2, &order), true);
@@ -180,11 +179,11 @@ void TestOrdering(CreateInterfaceFn factory)
 
 void TestReadiness(CreateInterfaceFn factory)
 {
-    TaskRecord delayed, immediate;
+    TaskRecord       delayed, immediate;
     std::vector<int> order;
-    auto scheduler = CreateScheduler(factory);
-    auto task = new RecordingTask(delayed, 1, &order);
-    task->readyAt = 10.0f;
+    auto             scheduler = CreateScheduler(factory);
+    auto             task      = new RecordingTask(delayed, 1, &order);
+    task->readyAt              = 10.0f;
     scheduler->QueueTask(task);
     scheduler->QueueTask(new RecordingTask(immediate, 2, &order));
     Check(scheduler->RunTask(2.5f), "Runnable task behind delayed task must execute");
@@ -206,8 +205,8 @@ void TestLimits(CreateInterfaceFn factory)
     for (int limit : {1, 3})
     {
         std::vector<TaskRecord> records(5);
-        std::vector<int> order;
-        auto scheduler = CreateScheduler(factory);
+        std::vector<int>        order;
+        auto                    scheduler = CreateScheduler(factory);
         for (int id = 0; id < int(records.size()); ++id)
             scheduler->QueueTask(new RecordingTask(records[id], id, &order));
         scheduler->RunTasks(0.0f, limit);
@@ -225,7 +224,7 @@ void TestLimits(CreateInterfaceFn factory)
     for (int limit : {0, -1, -7})
     {
         std::vector<TaskRecord> records(5);
-        auto scheduler = CreateScheduler(factory);
+        auto                    scheduler = CreateScheduler(factory);
         for (auto& record : records)
             scheduler->QueueTask(new RecordingTask(record));
         scheduler->RunTasks(0.0f, limit);
@@ -238,11 +237,11 @@ void TestLimits(CreateInterfaceFn factory)
 void TestDrain(CreateInterfaceFn factory)
 {
     std::vector<TaskRecord> records(3);
-    std::vector<int> order;
-    auto scheduler = CreateScheduler(factory);
+    std::vector<int>        order;
+    auto                    scheduler = CreateScheduler(factory);
     for (int id = 0; id < int(records.size()); ++id)
     {
-        auto task = new RecordingTask(records[id], id, &order);
+        auto task   = new RecordingTask(records[id], id, &order);
         task->ready = false;
         scheduler->QueueTask(task, id == 2);
     }
@@ -264,7 +263,7 @@ void TestDrain(CreateInterfaceFn factory)
 void TestDestroy(CreateInterfaceFn factory)
 {
     std::vector<TaskRecord> records(3);
-    auto scheduler = CreateScheduler(factory);
+    auto                    scheduler = CreateScheduler(factory);
     for (auto& record : records)
         scheduler->QueueTask(new RecordingTask(record));
     Check(scheduler->RunTask(0.0f), "First task must execute");
@@ -281,16 +280,16 @@ void TestDestroy(CreateInterfaceFn factory)
 void TestCreatorThread(CreateInterfaceFn factory)
 {
     TaskRecord record;
-    auto scheduler = CreateScheduler(factory);
+    auto       scheduler = CreateScheduler(factory);
     Check(scheduler->IsCurrentThreadCreatorThread(), "Creating thread must be recognized");
     scheduler->QueueTask(new RecordingTask(record));
-    bool workerIsCreator = true;
-    bool workerRanTask = false;
+    bool        workerIsCreator = true;
+    bool        workerRanTask   = false;
     std::thread worker([&] {
         workerIsCreator = scheduler->IsCurrentThreadCreatorThread();
-        workerRanTask = scheduler->RunTask(3.0f);
+        workerRanTask   = scheduler->RunTask(3.0f);
     });
-    const auto workerId = worker.get_id();
+    const auto  workerId = worker.get_id();
     worker.join();
     Check(!workerIsCreator, "Other thread must not be recognized as creator");
     Check(workerRanTask, "RunTask must work on the calling thread");
@@ -301,14 +300,14 @@ void TestCreatorThread(CreateInterfaceFn factory)
 
 void TestConcurrentQueue(CreateInterfaceFn factory)
 {
-    constexpr int producerCount = 4;
-    constexpr int tasksPerProducer = 128;
-    constexpr int taskCount = producerCount * tasksPerProducer;
-    std::vector<TaskRecord> records(taskCount);
-    std::vector<int> order;
-    auto scheduler = CreateScheduler(factory);
-    std::promise<void> start;
-    auto signal = start.get_future().share();
+    constexpr int            producerCount    = 4;
+    constexpr int            tasksPerProducer = 128;
+    constexpr int            taskCount        = producerCount * tasksPerProducer;
+    std::vector<TaskRecord>  records(taskCount);
+    std::vector<int>         order;
+    auto                     scheduler = CreateScheduler(factory);
+    std::promise<void>       start;
+    auto                     signal = start.get_future().share();
     std::vector<std::thread> producers;
     for (int producer = 0; producer < producerCount; ++producer)
     {
@@ -340,17 +339,17 @@ void TestConcurrentQueue(CreateInterfaceFn factory)
         Expect(id, order[id], "Concurrent queue must have no missing or duplicate IDs");
         ExpectCompleted(records[id]);
         Expect(std::vector<std::thread::id>{std::this_thread::get_id()}, records[id].runThreads,
-            "Queued task must execute on the consumer thread");
+               "Queued task must execute on the consumer thread");
     }
     Check(!scheduler->RunTask(11.0f), "Concurrent queue must be empty after execution");
 }
 
 void TestReentrantQueue(CreateInterfaceFn factory)
 {
-    TaskRecord first, second, recursive, queued;
+    TaskRecord       first, second, recursive, queued;
     std::vector<int> order;
-    auto scheduler = CreateScheduler(factory);
-    auto task = new RecordingTask(first, 1, &order);
+    auto             scheduler = CreateScheduler(factory);
+    auto             task      = new RecordingTask(first, 1, &order);
     // A producer must be able to acquire the queue lock while Run is active.
     // If Run held that lock, the join would hang and CTest's timeout would fail.
     task->onRun = [&] {
@@ -365,14 +364,16 @@ void TestReentrantQueue(CreateInterfaceFn factory)
     ExpectCompleted(first);
     ExpectCompleted(second);
 
-    auto recursiveTask = new RecordingTask(recursive);
-    recursiveTask->onRun = [&] { scheduler->QueueTask(new RecordingTask(queued)); };
+    auto recursiveTask   = new RecordingTask(recursive);
+    recursiveTask->onRun = [&] {
+        scheduler->QueueTask(new RecordingTask(queued));
+    };
     scheduler->QueueTask(recursiveTask);
     scheduler->RunTasks(4.0f, 0);
     ExpectCompleted(recursive);
     ExpectCompleted(queued);
 }
-}
+} // namespace
 
 int main(int argc, char** argv)
 {
@@ -384,10 +385,7 @@ int main(int argc, char** argv)
     try
     {
         const std::pair<const char*, void (*)(CreateInterfaceFn)> tests[] = {
-            {"Factory", TestFactory}, {"Empty", TestEmpty}, {"Ordering", TestOrdering},
-            {"Readiness", TestReadiness}, {"Limits", TestLimits}, {"Drain", TestDrain},
-            {"Destroy", TestDestroy}, {"CreatorThread", TestCreatorThread},
-            {"ConcurrentQueue", TestConcurrentQueue}, {"ReentrantQueue", TestReentrantQueue}};
+            {"Factory", TestFactory}, {"Empty", TestEmpty}, {"Ordering", TestOrdering}, {"Readiness", TestReadiness}, {"Limits", TestLimits}, {"Drain", TestDrain}, {"Destroy", TestDestroy}, {"CreatorThread", TestCreatorThread}, {"ConcurrentQueue", TestConcurrentQueue}, {"ReentrantQueue", TestReentrantQueue}};
         LoadedModule module(argv[1]);
         for (const auto& [name, test] : tests)
         {
