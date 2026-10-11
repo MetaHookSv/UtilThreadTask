@@ -33,9 +33,11 @@ target_compile_definitions(utilthreadtask_settings INTERFACE
     $<$<CONFIG:Debug>:_DEBUG> $<$<CONFIG:Release>:NDEBUG>)
 target_compile_options(utilthreadtask_settings INTERFACE /W3 /permissive- /wd4819 /Zi)
 
+include(cmake/SourceGroups.cmake)
 add_library(UtilThreadTask SHARED
     src/ThreadedTask.cpp src/UtilThreadTask.cpp src/dllmain.cpp
     "${METAHOOK_SOURCE_PATH}/include/HLSDK/common/interface.cpp")
+utilthreadtask_assign_source_groups(UtilThreadTask)
 target_link_libraries(UtilThreadTask PRIVATE utilthreadtask_settings)
 target_compile_definitions(UtilThreadTask PRIVATE UTILTHREADTASK_EXPORTS _USRDLL)
 target_compile_options(UtilThreadTask PRIVATE /MP /sdl $<$<CONFIG:Release>:/Gy;/Oi>)
