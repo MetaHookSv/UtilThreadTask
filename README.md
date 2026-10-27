@@ -12,8 +12,7 @@ The port preserves `UtilThreadTask.dll`, the `CreateInterface` export, and the
 ## Build and test
 
 Requirements: Windows, Visual Studio 2022 with the C++ x86 tools and Windows SDK,
-CMake 3.21 or newer, and Git. Debug and Release use C++20, static MSVC runtime,
-and VC-LTL 5.3.1.
+CMake 3.21 or newer, and Git. Debug and Release use C++20 and the static MSVC runtime.
 
 ```bat
 scripts\build-UtilThreadTask-x86-Release.bat
@@ -43,21 +42,18 @@ generators require `-DCMAKE_BUILD_TYPE=Debug` or `Release`.
 
 The first configure fetches the MetaHook SDK at
 `4d23b6fecd79dc949aabc2e145480cd1328d4a35`, without submodules or building the
-launcher, and downloads VC-LTL 5.3.1 into `thirdparty/cache`. The VC-LTL archive
-is verified with SHA-256
-`7a18799ed3aa84a225610a5447a56bc534c5c98ccb8dec05caba0e3f633431ad`.
+launcher.
 
-For a local or offline build, provide existing dependencies:
+For a local or offline build, provide an existing MetaHook SDK:
 
 ```bat
-scripts\build-UtilThreadTask-x86-Release.bat -DMETAHOOK_SOURCE_PATH=D:\MetaHook -DVC_LTL_Root=D:\VC-LTL-5.3.1
+scripts\build-UtilThreadTask-x86-Release.bat -DMETAHOOK_SOURCE_PATH=D:\MetaHook
 ```
 
-The same names are accepted as environment variables when initializing the
+The same name is accepted as an environment variable when initializing the
 CMake cache. Explicit CMake cache values take precedence. External directories
 are read-only. `METAHOOK_SOURCE_PATH` must contain `include/HLSDK/common/interface.h`,
-`interface.cpp`, and `LICENSE`; `VC_LTL_Root` must be an extracted VC-LTL binary
-package. `UTILTHREADTASK_DEPENDENCY_CACHE_DIR` can override the download cache.
+`interface.cpp`, and `LICENSE`.
 
 ## Public interface and lifecycle
 

@@ -21,7 +21,6 @@ endif()
 
 include(cmake/Dependencies.cmake)
 utilthreadtask_prepare_dependencies()
-include("${VC_LTL_Root}/VC-LTL helper for cmake.cmake")
 
 add_library(utilthreadtask_settings INTERFACE)
 target_compile_features(utilthreadtask_settings INTERFACE cxx_std_20)

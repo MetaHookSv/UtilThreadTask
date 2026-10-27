@@ -12,8 +12,7 @@
 ## 构建与测试
 
 需要 Windows、Visual Studio 2022（C++ x86 工具和 Windows SDK）、CMake 3.21
-或更新版本，以及 Git。Debug / Release 使用 C++20、静态 MSVC runtime
-和 VC-LTL 5.3.1。
+或更新版本，以及 Git。Debug / Release 使用 C++20 和静态 MSVC runtime。
 
 ```bat
 scripts\build-UtilThreadTask-x86-Release.bat
@@ -43,21 +42,17 @@ cmake --install build/x86/Release --config Release
 
 首次配置自动获取固定提交
 `4d23b6fecd79dc949aabc2e145480cd1328d4a35` 的 MetaHook SDK，
-不拉取子模块、不构建 launcher；VC-LTL 5.3.1 下载到 `thirdparty/cache`，
-并通过以下 SHA-256 校验：
-`7a18799ed3aa84a225610a5447a56bc534c5c98ccb8dec05caba0e3f633431ad`。
+不拉取子模块、不构建 launcher。
 
-本地或离线构建可指定已有依赖：
+本地或离线构建可指定已有的 MetaHook SDK：
 
 ```bat
-scripts\build-UtilThreadTask-x86-Release.bat -DMETAHOOK_SOURCE_PATH=D:\MetaHook -DVC_LTL_Root=D:\VC-LTL-5.3.1
+scripts\build-UtilThreadTask-x86-Release.bat -DMETAHOOK_SOURCE_PATH=D:\MetaHook
 ```
 
 初始化 CMake cache 时也接受同名环境变量，显式 CMake 参数优先。
 外部依赖目录只读。`METAHOOK_SOURCE_PATH` 需要提供
-`include/HLSDK/common/interface.h`、`interface.cpp` 和 `LICENSE`；
-`VC_LTL_Root` 需要指向解压后的 VC-LTL 二进制包。
-下载缓存位置可通过 `UTILTHREADTASK_DEPENDENCY_CACHE_DIR` 覆盖。
+`include/HLSDK/common/interface.h`、`interface.cpp` 和 `LICENSE`。
 
 ## 接口与生命周期
 
